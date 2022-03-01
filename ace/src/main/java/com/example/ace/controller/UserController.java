@@ -30,7 +30,7 @@ public class UserController {
     //java
     @RequestMapping("javaCode")
     @ResponseBody
-    public String insertCode(String javaCode,HttpServletResponse response, HttpSession session) throws IOException {
+    public String insertJavaCode(String javaCode,HttpServletResponse response, HttpSession session) throws IOException {
 
         //1.将代码更新source表
 
@@ -54,7 +54,6 @@ public class UserController {
         //4.将代码写入文件
 
         FileOutputStream fos = new FileOutputStream(testFile);
-        javaCode = URLDecoder.decode(javaCode,"UTF-8");
         byte[] bytes = javaCode.getBytes(StandardCharsets.UTF_8);
         fos.write(bytes);
 
@@ -70,15 +69,6 @@ public class UserController {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
-        /*InputStream is = process2.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process2.getInputStream()));
-        String line=null;
-        while((line=reader.readLine())!=null){
-            System.out.println(line);
-        }
-        int result=process2.waitFor();
-        System.out.println(result);*/
 
         //6.读取重定向output文件内容
         String str="";
@@ -96,6 +86,7 @@ public class UserController {
             is.read(buffer);
             is.close();
             str = new String(buffer, StandardCharsets.UTF_8);
+            System.out.println(str);
             //7.响应客户端
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,19 +135,19 @@ public class UserController {
         //5.编译
         Runtime run = Runtime.getRuntime();
         try {
-            //win10
-            /*Process process1 = run.exec("javac Test.java", null, new File(fileParentPath));//编译
-            Process process2 = run.exec(new String[]{"cmd.exe","/C","java Test.java > output.txt"}, null, new File(fileParentPath));//运行并重定向*/
 
-            //ubuntu
-            //Process process1 = run.exec("javac Test.java", null, new File(fileParentPath));//编译
-            //Process process2 = run.exec(new String[]{"/bin/bash","/c","java "+"Test.java > output.txt"}, null, new File(fileParentPath));//运行并重定向
-            //Process process = run.exec("java Test.java > output.txt",null,new File(fileParentPath));
 
-            Process process5 = run.exec(new String[]{"/bin/sh","-c","gcc Test.c -o Test"}, null,new File(fileParentPath));
-            Process process6 = run.exec(new String[]{"/bin/sh","-c","./Test > output.txt"}, null,new File(fileParentPath));
+            Process process1 = run.exec(new String[]{"/bin/sh","-c","gcc Test.c -o Test"}, null,new File(fileParentPath));
+            Process process2 = run.exec(new String[]{"/bin/sh","-c","./Test > output.txt"}, null,new File(fileParentPath));
+            process1.waitFor();
+            process2.waitFor();
+            process1.destroy();
+            process2.destroy();
 
-        } catch (IOException e) {
+
+
+
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
