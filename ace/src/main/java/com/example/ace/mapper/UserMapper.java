@@ -9,5 +9,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface UserMapper {
-    public List<User> find();
+    List<User> find();
+    User findById(int id);
+
 }

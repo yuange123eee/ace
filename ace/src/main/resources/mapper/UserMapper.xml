@@ -6,6 +6,11 @@
         select * from user
     </select>
 
+    <select id="findById" resultType="user">
+        SELECT * from m_user where id = #{id}
+    </select>
+
+
 
 
 </mapper>
